@@ -1,0 +1,6 @@
+# pnpm build-script approvals (pnpm v10+ reads these here, not package.json).
+# These dev-tool binaries (used by drizzle-kit / the eslint module resolver) are
+# allowed to run their install scripts.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
