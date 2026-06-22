@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { useDashboard } from '@/api/dashboard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Avatar } from '@/components/ui/avatar';
@@ -29,8 +30,10 @@ export default function DashboardScreen() {
   const profile = useAuthStore((s) => s.profile);
   const user = useAuthStore((s) => s.user);
   const avatarUrl = useAvatarUrl(profile?.avatar_url);
+  const { data: dashboard } = useDashboard();
 
   const name = profile?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? '';
+  const hasData = dashboard ? dashboard.subjectsCount > 0 : false;
 
   return (
     <Screen>
@@ -39,24 +42,32 @@ export default function DashboardScreen() {
           <ThemedText type="subtitle">{t('dashboard.greeting', { name })}</ThemedText>
           <ThemedText themeColor="textSecondary">{t('dashboard.title')}</ThemedText>
         </View>
-        <Pressable onPress={() => router.push('/(app)/profile')} accessibilityRole="button">
+        <Pressable onPress={() => router.push('/profile')} accessibilityRole="button">
           <Avatar uri={avatarUrl} name={profile?.full_name} size={56} />
         </Pressable>
       </View>
 
       <View style={styles.grid}>
-        <StatCard label={t('dashboard.subjects')} value="0" />
-        <StatCard label={t('dashboard.materials')} value="0" />
-        <StatCard label={t('dashboard.average')} value="—" />
-        <StatCard label={t('dashboard.lastExam')} value="—" />
+        <StatCard label={t('dashboard.subjects')} value={String(dashboard?.subjectsCount ?? 0)} />
+        <StatCard label={t('dashboard.materials')} value={String(dashboard?.materialsCount ?? 0)} />
+        <StatCard
+          label={t('dashboard.average')}
+          value={dashboard?.averageScore != null ? `${dashboard.averageScore}%` : '—'}
+        />
+        <StatCard
+          label={t('dashboard.lastExam')}
+          value={dashboard?.lastExam ? `${dashboard.lastExam.score}%` : '—'}
+        />
       </View>
 
-      <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
-        {t('dashboard.noData')}
-      </ThemedText>
+      {!hasData ? (
+        <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
+          {t('dashboard.noData')}
+        </ThemedText>
+      ) : null}
 
       <View style={styles.menu}>
-        <MenuRow label={t('dashboard.profile')} onPress={() => router.push('/(app)/profile')} />
+        <MenuRow label={t('dashboard.profile')} onPress={() => router.push('/profile')} />
         <MenuRow label={t('dashboard.settings')} onPress={() => router.push('/(app)/settings')} />
       </View>
     </Screen>

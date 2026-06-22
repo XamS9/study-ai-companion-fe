@@ -29,11 +29,11 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.actions}>
-        <Button title={t('profile.edit')} onPress={() => router.push('/(app)/profile/edit')} />
+        <Button title={t('profile.edit')} onPress={() => router.push('/profile/edit')} />
         <Button
           title={t('profile.changePassword')}
           variant="secondary"
-          onPress={() => router.push('/(app)/profile/change-password')}
+          onPress={() => router.push('/profile/change-password')}
         />
         <Button title={t('profile.signOut')} variant="ghost" onPress={signOut} />
       </View>

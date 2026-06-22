@@ -7,32 +7,50 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
+/**
+ * Palette source of truth: `color schemas.md`. Brand colors are shared across
+ * both themes; the `bg*` surface scale and text ramp differ per theme.
+ * Existing semantic key names are preserved (consumers reference them by name);
+ * the `bg*` tokens map onto them as noted inline.
+ */
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    primary: '#208AEF',
-    primaryText: '#ffffff',
-    border: '#D9DBE0',
-    inputBackground: '#F7F8FA',
-    error: '#E5484D',
-    success: '#30A46C',
+    text: '#1A1A2E', //          textPrimary
+    textSecondary: '#4A4A6A',
+    textMuted: '#9999B8', //     placeholders, disabled
+    background: '#F5F5FF', //    bg0 — base screen
+    surface: '#EEEEFF', //       bg1 — nav bar, headers
+    backgroundElement: '#FFFFFF', //   bg2 — cards, inputs, modals
+    backgroundSelected: '#E0E0F5', //  bg3 — elevated, progress track
+    inputBackground: '#FFFFFF', //     bg2
+    border: '#E0E0F5', //        bg3
+    divider: '#1A1A2E1A', //     separator line (10% opacity)
+    primary: '#6166F0',
+    primaryDim: '#484DCC', //    hover / pressed primary
+    primaryText: '#FFFFFF',
+    accent: '#61DEC7',
+    error: '#F06161', //         danger
+    warning: '#FAC543',
+    success: '#4DD699',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    primary: '#208AEF',
-    primaryText: '#ffffff',
-    border: '#3A3D42',
-    inputBackground: '#1A1B1E',
-    error: '#FF6369',
-    success: '#3DD68C',
+    text: '#F2F2FA', //          textPrimary
+    textSecondary: '#9999B8',
+    textMuted: '#616180', //     placeholders, disabled
+    background: '#121220', //    bg0 — base screen
+    surface: '#19192E', //       bg1 — nav bar, headers
+    backgroundElement: '#23233D', //   bg2 — cards, inputs, modals
+    backgroundSelected: '#333352', //  bg3 — elevated, progress track
+    inputBackground: '#23233D', //     bg2
+    border: '#333352', //        bg3
+    divider: '#FFFFFF0D', //     separator line (7% opacity)
+    primary: '#6166F0',
+    primaryDim: '#484DCC', //    hover / pressed primary
+    primaryText: '#FFFFFF',
+    accent: '#61DEC7',
+    error: '#F06161', //         danger
+    warning: '#FAC543',
+    success: '#4DD699',
   },
 } as const;
 

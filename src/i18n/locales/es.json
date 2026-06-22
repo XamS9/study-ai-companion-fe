@@ -10,7 +10,10 @@
     "loading": "Cargando…",
     "back": "Atrás",
     "continue": "Continuar",
-    "or": "o"
+    "or": "o",
+    "retry": "Reintentar",
+    "delete": "Eliminar",
+    "create": "Crear"
   },
   "auth": {
     "loginTitle": "Bienvenido de nuevo",
@@ -56,6 +59,130 @@
     "noData": "Aún no hay datos — agrega tu primera materia para empezar.",
     "profile": "Perfil",
     "settings": "Configuración"
+  },
+  "tabs": {
+    "home": "Inicio",
+    "subjects": "Materias",
+    "exams": "Exámenes",
+    "history": "Historial",
+    "profile": "Perfil"
+  },
+  "subjects": {
+    "title": "Materias",
+    "search": "Buscar materia...",
+    "filter": {
+      "all": "Todas",
+      "active": "Activas",
+      "completed": "Completadas"
+    },
+    "materials_one": "{{count}} material",
+    "materials_other": "{{count}} materiales",
+    "exams_one": "{{count}} examen",
+    "exams_other": "{{count}} exámenes",
+    "addSubject": "Agregar materia",
+    "empty": "No hay materias que coincidan.",
+    "notFound": "Materia no encontrada.",
+    "detail": {
+      "progress": "Progreso",
+      "materials": "Materiales",
+      "exams": "Exámenes",
+      "noMaterials": "Aún no hay materiales.",
+      "noExams": "Aún no hay exámenes.",
+      "addMaterial": "Material",
+      "addExam": "Examen",
+      "deleteSubject": "Eliminar materia",
+      "deleteTitle": "¿Eliminar materia?",
+      "deleteMessage": "Se eliminará la materia junto con sus materiales y exámenes."
+    },
+    "new": {
+      "title": "Nueva materia",
+      "name": "Nombre de la materia",
+      "namePlaceholder": "p. ej. Cálculo I",
+      "code": "Código",
+      "codePlaceholder": "p. ej. MAT-101",
+      "description": "Descripción",
+      "descriptionPlaceholder": "¿De qué trata esta materia?",
+      "color": "Color",
+      "create": "Crear materia"
+    }
+  },
+  "materials": {
+    "title": "Material",
+    "notFound": "Material no encontrado.",
+    "content": "Contenido extraído",
+    "noContent": "Aún no hay contenido.",
+    "summary": "Resumen",
+    "generateSummary": "Generar resumen con IA",
+    "pages_one": "{{count}} página",
+    "pages_other": "{{count}} páginas",
+    "types": {
+      "pdf": "PDF",
+      "image": "Imagen",
+      "note": "Nota"
+    },
+    "new": {
+      "title": "Nuevo material",
+      "titleLabel": "Título",
+      "titlePlaceholder": "p. ej. Apuntes del capítulo 4",
+      "typeLabel": "Tipo",
+      "pagesLabel": "Páginas",
+      "contentLabel": "Contenido / apuntes",
+      "contentPlaceholder": "Pega o escribe el texto del material…",
+      "create": "Agregar material"
+    }
+  },
+  "exams": {
+    "title": "Exámenes",
+    "filter": {
+      "all": "Todos",
+      "upcoming": "Próximos",
+      "completed": "Completados"
+    },
+    "upcoming": "Próximo",
+    "empty": "No hay exámenes que coincidan.",
+    "notFound": "Examen no encontrado.",
+    "detail": {
+      "correct": "{{correct}} / {{total}} correctas",
+      "review": "Revisión de preguntas",
+      "preview": "Preguntas generadas",
+      "take": "Realizar examen",
+      "answer": "Respuesta: {{answer}}",
+      "upcomingNote_one": "{{count}} pregunta generada por IA lista.",
+      "upcomingNote_other": "{{count}} preguntas generadas por IA listas."
+    },
+    "new": {
+      "title": "Nuevo examen",
+      "create": "Crear examen",
+      "subject": "Materia",
+      "name": "Nombre del examen",
+      "namePlaceholder": "p. ej. Parcial 1",
+      "questionCount": "Número de preguntas",
+      "hint": "Las preguntas se toman del banco de preguntas de la materia.",
+      "noSubjects": "Crea una materia primero."
+    },
+    "take": {
+      "title": "Realizar examen",
+      "progress": "{{answered}} / {{total}} respondidas",
+      "finish": "Finalizar y enviar"
+    }
+  },
+  "history": {
+    "title": "Historial",
+    "types": {
+      "exam": "Examen completado",
+      "material": "Material agregado",
+      "subject": "Materia creada"
+    },
+    "empty": "Aún no hay actividad.",
+    "relative": {
+      "now": "ahora mismo",
+      "minute_one": "hace {{count}} minuto",
+      "minute_other": "hace {{count}} minutos",
+      "hour_one": "hace {{count}} hora",
+      "hour_other": "hace {{count}} horas",
+      "day_one": "hace {{count}} día",
+      "day_other": "hace {{count}} días"
+    }
   },
   "profile": {
     "title": "Perfil",

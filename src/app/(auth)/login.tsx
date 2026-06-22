@@ -13,11 +13,11 @@ import { signInWithProvider, type OAuthProvider } from '@/lib/auth-oauth';
 import { supabase } from '@/lib/supabase';
 
 // Flip `enabled` to true once the provider is configured in the Supabase dashboard.
-// GitHub and Microsoft (azure) are deferred for now — only configured providers render.
+// GitHub is still deferred; Google and Microsoft (azure) are configured in Supabase.
 const PROVIDERS: { id: OAuthProvider; label: string; enabled: boolean }[] = [
   { id: 'google', label: 'Google', enabled: true },
   { id: 'github', label: 'GitHub', enabled: false },
-  { id: 'azure', label: 'Microsoft', enabled: false },
+  { id: 'azure', label: 'Microsoft', enabled: true },
 ];
 
 const ENABLED_PROVIDERS = PROVIDERS.filter((p) => p.enabled);

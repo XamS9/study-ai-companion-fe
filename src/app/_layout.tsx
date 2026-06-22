@@ -5,10 +5,11 @@ import * as Linking from 'expo-linking';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { Splash } from '@/components/ui/splash';
+import { DbProvider } from '@/db/provider';
 import { useResolvedScheme } from '@/hooks/use-theme';
 import { createSessionFromUrl } from '@/lib/auth-oauth';
 import { queryClient } from '@/lib/query-client';
@@ -32,7 +33,7 @@ function useProtectedRoute(status: AuthStatus) {
     if (status === 'unauthenticated' && !inAuthGroup) {
       router.replace('/(auth)/login');
     } else if (status === 'authenticated' && inAuthGroup) {
-      router.replace('/(app)');
+      router.replace('/');
     }
   }, [status, segments, router]);
 }
@@ -74,9 +75,7 @@ function RootNavigator() {
           <Stack.Screen name="(app)" />
         </Stack>
       ) : (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator />
-        </View>
+        <Splash />
       )}
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
@@ -88,7 +87,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <RootNavigator />
+          <DbProvider>
+            <RootNavigator />
+          </DbProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

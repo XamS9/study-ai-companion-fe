@@ -10,7 +10,10 @@
     "loading": "Loading…",
     "back": "Back",
     "continue": "Continue",
-    "or": "or"
+    "or": "or",
+    "retry": "Retry",
+    "delete": "Delete",
+    "create": "Create"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -56,6 +59,130 @@
     "noData": "No data yet — add your first subject to get started.",
     "profile": "Profile",
     "settings": "Settings"
+  },
+  "tabs": {
+    "home": "Home",
+    "subjects": "Subjects",
+    "exams": "Exams",
+    "history": "History",
+    "profile": "Profile"
+  },
+  "subjects": {
+    "title": "Subjects",
+    "search": "Search subject...",
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "materials_one": "{{count}} material",
+    "materials_other": "{{count}} materials",
+    "exams_one": "{{count}} exam",
+    "exams_other": "{{count}} exams",
+    "addSubject": "Add subject",
+    "empty": "No subjects match.",
+    "notFound": "Subject not found.",
+    "detail": {
+      "progress": "Progress",
+      "materials": "Materials",
+      "exams": "Exams",
+      "noMaterials": "No materials yet.",
+      "noExams": "No exams yet.",
+      "addMaterial": "Material",
+      "addExam": "Exam",
+      "deleteSubject": "Delete subject",
+      "deleteTitle": "Delete subject?",
+      "deleteMessage": "This will remove the subject and all its materials and exams."
+    },
+    "new": {
+      "title": "New subject",
+      "name": "Subject name",
+      "namePlaceholder": "e.g. Calculus I",
+      "code": "Code",
+      "codePlaceholder": "e.g. MAT-101",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this subject about?",
+      "color": "Color",
+      "create": "Create subject"
+    }
+  },
+  "materials": {
+    "title": "Material",
+    "notFound": "Material not found.",
+    "content": "Extracted content",
+    "noContent": "No content yet.",
+    "summary": "Summary",
+    "generateSummary": "Generate AI summary",
+    "pages_one": "{{count}} page",
+    "pages_other": "{{count}} pages",
+    "types": {
+      "pdf": "PDF",
+      "image": "Image",
+      "note": "Note"
+    },
+    "new": {
+      "title": "New material",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g. Chapter 4 notes",
+      "typeLabel": "Type",
+      "pagesLabel": "Pages",
+      "contentLabel": "Content / notes",
+      "contentPlaceholder": "Paste or type the material text…",
+      "create": "Add material"
+    }
+  },
+  "exams": {
+    "title": "Exams",
+    "filter": {
+      "all": "All",
+      "upcoming": "Upcoming",
+      "completed": "Completed"
+    },
+    "upcoming": "Upcoming",
+    "empty": "No exams match.",
+    "notFound": "Exam not found.",
+    "detail": {
+      "correct": "{{correct}} / {{total}} correct",
+      "review": "Question review",
+      "preview": "Generated questions",
+      "take": "Take exam",
+      "answer": "Answer: {{answer}}",
+      "upcomingNote_one": "{{count}} AI-generated question ready.",
+      "upcomingNote_other": "{{count}} AI-generated questions ready."
+    },
+    "new": {
+      "title": "New exam",
+      "create": "Create exam",
+      "subject": "Subject",
+      "name": "Exam name",
+      "namePlaceholder": "e.g. Midterm 1",
+      "questionCount": "Number of questions",
+      "hint": "Questions are drawn from the subject's question bank.",
+      "noSubjects": "Create a subject first."
+    },
+    "take": {
+      "title": "Take exam",
+      "progress": "{{answered}} / {{total}} answered",
+      "finish": "Finish & submit"
+    }
+  },
+  "history": {
+    "title": "History",
+    "types": {
+      "exam": "Exam completed",
+      "material": "Material added",
+      "subject": "Subject created"
+    },
+    "empty": "No activity yet.",
+    "relative": {
+      "now": "just now",
+      "minute_one": "{{count}} minute ago",
+      "minute_other": "{{count}} minutes ago",
+      "hour_one": "{{count}} hour ago",
+      "hour_other": "{{count}} hours ago",
+      "day_one": "{{count}} day ago",
+      "day_other": "{{count}} days ago"
+    }
   },
   "profile": {
     "title": "Profile",
