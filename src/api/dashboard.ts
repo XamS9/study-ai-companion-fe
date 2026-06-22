@@ -1,9 +1,10 @@
-import { readDashboard, writeDashboard } from '@/db/cache';
+import { readActivity, readDashboard, writeActivity, writeDashboard } from '@/db/cache';
 import { useCachedQuery } from '@/db/cached-query';
 import { api } from '@/lib/api';
-import type { Dashboard } from './types';
+import type { Activity, Dashboard } from './types';
 
 export const dashboardKeys = { all: ['dashboard'] as const };
+export const activityKeys = { all: ['activity'] as const };
 
 export function useDashboard() {
   return useCachedQuery({
@@ -11,5 +12,14 @@ export function useDashboard() {
     fetcher: () => api.get<Dashboard>('/api/dashboard'),
     readCache: readDashboard,
     writeCache: writeDashboard,
+  });
+}
+
+export function useActivity() {
+  return useCachedQuery({
+    queryKey: activityKeys.all,
+    fetcher: () => api.get<Activity[]>('/api/dashboard/activity'),
+    readCache: readActivity,
+    writeCache: writeActivity,
   });
 }

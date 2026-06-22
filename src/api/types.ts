@@ -73,3 +73,18 @@ export type Dashboard = {
   averageScore: number | null;
   lastExam: { id: string; name: string; subject: string | null; score: number; date: string } | null;
 };
+
+export type ActivityType = 'exam' | 'material' | 'subject';
+
+export type Activity = {
+  id: string;
+  type: ActivityType;
+  /** The item's own name; for a `subject` row this is the subject name itself. */
+  title: string;
+  /** Parent subject name for exams/materials; null for a `subject` row. */
+  subject: string | null;
+  /** Trailing note such as a score (`85%`); null when not applicable. */
+  note: string | null;
+  /** ISO 8601 timestamp; the feed is ordered newest-first. */
+  timestamp: string;
+};

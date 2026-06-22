@@ -1,6 +1,7 @@
 import { eq, notInArray } from 'drizzle-orm';
 
 import type {
+  Activity,
   Dashboard,
   Exam,
   ExamDetail,
@@ -168,6 +169,24 @@ export function readDashboard(): Dashboard | undefined {
 export function writeDashboard(dashboard: Dashboard): void {
   safeWrite(() => {
     const row = { key: DASHBOARD_KEY, value: dashboard, updatedAt: Date.now() };
+    db.insert(appCache).values(row).onConflictDoUpdate({ target: appCache.key, set: row }).run();
+  });
+}
+
+// ── Activity feed (derived list, stored as a single JSON blob) ────────────────
+
+const ACTIVITY_KEY = 'activity';
+
+export function readActivity(): Activity[] | undefined {
+  return safeRead(() => {
+    const row = db.select().from(appCache).where(eq(appCache.key, ACTIVITY_KEY)).get();
+    return row ? (row.value as Activity[]) : undefined;
+  });
+}
+
+export function writeActivity(list: Activity[]): void {
+  safeWrite(() => {
+    const row = { key: ACTIVITY_KEY, value: list, updatedAt: Date.now() };
     db.insert(appCache).values(row).onConflictDoUpdate({ target: appCache.key, set: row }).run();
   });
 }

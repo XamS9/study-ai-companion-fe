@@ -1,24 +1,15 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
+import { useActivity } from '@/api/dashboard';
+import type { Activity, ActivityType } from '@/api/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AsyncContent } from '@/components/ui/async-content';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-
-type ActivityType = 'exam' | 'material' | 'subject';
-
-type Activity = {
-  id: string;
-  type: ActivityType;
-  /** Subject + item, e.g. "Cálculo I · Parcial 1". */
-  detail: string;
-  /** Trailing note such as a score; omitted when not applicable. */
-  note?: string;
-  /** How long ago the activity happened, in minutes. */
-  minutesAgo: number;
-};
 
 const TYPE_GLYPH: Record<ActivityType, string> = { exam: '✎', material: '◫', subject: '＋' };
 const TYPE_COLOR: Record<ActivityType, 'success' | 'accent' | 'primary'> = {
@@ -27,33 +18,31 @@ const TYPE_COLOR: Record<ActivityType, 'success' | 'accent' | 'primary'> = {
   subject: 'primary',
 };
 
-// Placeholder data until the activity data layer lands.
-const MOCK_ACTIVITY: Activity[] = [
-  { id: '1', type: 'exam', detail: 'Cálculo I · Parcial 1', note: '85%', minutesAgo: 120 },
-  { id: '2', type: 'material', detail: 'Programación · Apuntes Tema 3', minutesAgo: 360 },
-  { id: '3', type: 'subject', detail: 'Física I', minutesAgo: 1440 },
-  { id: '4', type: 'exam', detail: 'Física I · Parcial 2', note: '48%', minutesAgo: 2880 },
-  { id: '5', type: 'material', detail: 'Historia Universal · PDF Capítulo 4', minutesAgo: 4320 },
-];
-
 export default function HistoryScreen() {
   const { t } = useTranslation();
+  const { data, isLoading, error, refetch } = useActivity();
+  const activity = data ?? [];
+  // Snapshot "now" once at mount so relative times stay pure during render (the
+  // React Compiler forbids calling Date.now() in the render body).
+  const [now] = useState(() => Date.now());
 
   return (
     <Screen>
       <ThemedText type="subtitle">{t('history.title')}</ThemedText>
 
-      {MOCK_ACTIVITY.length === 0 ? (
-        <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
-          {t('history.empty')}
-        </ThemedText>
-      ) : (
+      <AsyncContent
+        isLoading={isLoading}
+        error={error as Error | null}
+        isEmpty={activity.length === 0}
+        emptyText={t('history.empty')}
+        onRetry={refetch}
+      >
         <View style={styles.list}>
-          {MOCK_ACTIVITY.map((a) => (
-            <ActivityRow key={a.id} activity={a} />
+          {activity.map((a) => (
+            <ActivityRow key={a.id} activity={a} now={now} />
           ))}
         </View>
-      )}
+      </AsyncContent>
     </Screen>
   );
 }
@@ -64,19 +53,22 @@ export default function HistoryScreen() {
  * `Intl.DateTimeFormat`/`NumberFormat` but not `RelativeTimeFormat`, so using it
  * here threw `Intl.RelativeTimeFormat is not a constructor` at runtime.
  */
-function useRelativeTime(minutesAgo: number) {
+function useRelativeTime(timestamp: string, now: number) {
   const { t } = useTranslation();
+  const minutesAgo = Math.max(0, Math.round((now - new Date(timestamp).getTime()) / 60000));
   if (minutesAgo < 1) return t('history.relative.now');
   if (minutesAgo < 60) return t('history.relative.minute', { count: minutesAgo });
   if (minutesAgo < 1440) return t('history.relative.hour', { count: Math.round(minutesAgo / 60) });
   return t('history.relative.day', { count: Math.round(minutesAgo / 1440) });
 }
 
-function ActivityRow({ activity }: { activity: Activity }) {
+function ActivityRow({ activity, now }: { activity: Activity; now: number }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const color = theme[TYPE_COLOR[activity.type]];
-  const time = useRelativeTime(activity.minutesAgo);
+  const time = useRelativeTime(activity.timestamp, now);
+  // "Subject · Item" for exams/materials; just the subject name for a subject row.
+  const detail = activity.subject ? `${activity.subject} · ${activity.title}` : activity.title;
 
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
@@ -88,7 +80,7 @@ function ActivityRow({ activity }: { activity: Activity }) {
       <View style={styles.cardText}>
         <ThemedText type="smallBold">{t(`history.types.${activity.type}`)}</ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
-          {activity.detail}
+          {detail}
         </ThemedText>
       </View>
       <View style={styles.trailing}>
@@ -123,5 +115,4 @@ const styles = StyleSheet.create({
   },
   cardText: { flex: 1, gap: Spacing.half },
   trailing: { alignItems: 'flex-end', gap: Spacing.half },
-  empty: { marginTop: Spacing.two, textAlign: 'center' },
 });
