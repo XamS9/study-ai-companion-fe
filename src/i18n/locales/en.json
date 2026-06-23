@@ -204,6 +204,49 @@
     "themeDark": "Dark",
     "language": "Language",
     "languageEnglish": "English",
-    "languageSpanish": "Spanish"
+    "languageSpanish": "Spanish",
+    "developer": "Developer",
+    "diagnostics": "Device diagnostics"
+  },
+  "diagnostics": {
+    "title": "Device diagnostics",
+    "subtitle": "Check and request the device capabilities the app uses. Camera and on-device OCR only work in a development or production build, not Expo Go.",
+    "status": "Status",
+    "requestPermission": "Request permission",
+    "statuses": {
+      "idle": "Not requested",
+      "pending": "Checking…",
+      "ok": "Granted",
+      "denied": "Denied",
+      "error": "Error"
+    },
+    "camera": {
+      "title": "Camera",
+      "description": "Capture study material to extract text via OCR.",
+      "show": "Show camera",
+      "hide": "Hide camera",
+      "flip": "Flip"
+    },
+    "location": {
+      "title": "Location",
+      "description": "Tag where a study session takes place.",
+      "action": "Request & get location",
+      "denied": "Permission denied — enable it in Settings.",
+      "unavailable": "Native module not in this build — rebuild the dev client (expo run:android) after adding expo-location."
+    },
+    "network": {
+      "title": "Network & Wi-Fi",
+      "description": "Detect connectivity to sync with the backend.",
+      "action": "Refresh",
+      "type": "Type",
+      "internet": "Internet"
+    },
+    "storage": {
+      "title": "Internal storage",
+      "description": "Cache files and offline data on the device.",
+      "action": "Run read/write test",
+      "wroteRead": "Wrote & read back {{size}} bytes ✓",
+      "disk": "Free {{free}} GB of {{total}} GB"
+    }
   }
 }

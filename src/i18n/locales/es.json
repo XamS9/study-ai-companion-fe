@@ -204,6 +204,49 @@
     "themeDark": "Oscuro",
     "language": "Idioma",
     "languageEnglish": "Inglés",
-    "languageSpanish": "Español"
+    "languageSpanish": "Español",
+    "developer": "Desarrollador",
+    "diagnostics": "Diagnóstico del dispositivo"
+  },
+  "diagnostics": {
+    "title": "Diagnóstico del dispositivo",
+    "subtitle": "Comprueba y solicita las capacidades del dispositivo que usa la app. La cámara y el OCR en el dispositivo solo funcionan en una build de desarrollo o producción, no en Expo Go.",
+    "status": "Estado",
+    "requestPermission": "Solicitar permiso",
+    "statuses": {
+      "idle": "Sin solicitar",
+      "pending": "Comprobando…",
+      "ok": "Concedido",
+      "denied": "Denegado",
+      "error": "Error"
+    },
+    "camera": {
+      "title": "Cámara",
+      "description": "Captura material de estudio para extraer texto con OCR.",
+      "show": "Mostrar cámara",
+      "hide": "Ocultar cámara",
+      "flip": "Girar"
+    },
+    "location": {
+      "title": "Ubicación",
+      "description": "Etiqueta dónde ocurre una sesión de estudio.",
+      "action": "Solicitar y obtener ubicación",
+      "denied": "Permiso denegado: actívalo en Ajustes.",
+      "unavailable": "Módulo nativo ausente en esta build: recompila el dev client (expo run:android) tras añadir expo-location."
+    },
+    "network": {
+      "title": "Red y Wi-Fi",
+      "description": "Detecta la conectividad para sincronizar con el backend.",
+      "action": "Actualizar",
+      "type": "Tipo",
+      "internet": "Internet"
+    },
+    "storage": {
+      "title": "Almacenamiento interno",
+      "description": "Guarda archivos en caché y datos sin conexión en el dispositivo.",
+      "action": "Ejecutar prueba de lectura/escritura",
+      "wroteRead": "Escritos y leídos {{size}} bytes ✓",
+      "disk": "Libres {{free}} GB de {{total}} GB"
+    }
   }
 }

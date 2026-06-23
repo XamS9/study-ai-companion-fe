@@ -1,8 +1,10 @@
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -52,6 +54,7 @@ function OptionGroup<T extends string>({
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const mode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
   const language = useLanguageStore((s) => s.language);
@@ -85,6 +88,17 @@ export default function SettingsScreen() {
         options={languageOptions}
         onSelect={setLanguage}
       />
+
+      <View style={styles.group}>
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('settings.developer')}
+        </ThemedText>
+        <Button
+          title={t('settings.diagnostics')}
+          variant="secondary"
+          onPress={() => router.push('/diagnostics')}
+        />
+      </View>
     </Screen>
   );
 }
