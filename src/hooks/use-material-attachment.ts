@@ -89,7 +89,17 @@ export function useMaterialAttachment() {
       mimeType: asset.mimeType ?? 'application/pdf',
       name: asset.name,
     });
-    return EMPTY;
+    setBusy(true);
+    try {
+      const { extractPdfText } = await import('@/lib/pdf');
+      const text = await extractPdfText(asset.uri);
+      return { ocrText: text };
+    } catch {
+      setOcrError(true);
+      return EMPTY;
+    } finally {
+      setBusy(false);
+    }
   }, []);
 
   const clear = useCallback(() => {

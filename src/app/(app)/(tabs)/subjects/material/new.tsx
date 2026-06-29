@@ -119,6 +119,7 @@ export default function NewMaterialScreen() {
           title={t('materials.new.pickPdf')}
           variant="secondary"
           onPress={() => onPick(attach.pickPdf)}
+          loading={attach.busy}
         />
       ) : null}
 
@@ -164,10 +165,10 @@ export default function NewMaterialScreen() {
       ) : null}
 
       <Field
-        label={t('materials.new.contentLabel')}
+        label={t(type === 'pdf' ? 'materials.new.contentLabelOptional' : 'materials.new.contentLabel')}
         value={content}
         onChangeText={setContent}
-        placeholder={t('materials.new.contentPlaceholder')}
+        placeholder={t(type === 'pdf' ? 'materials.new.contentPlaceholderPdf' : 'materials.new.contentPlaceholder')}
         multiline
         style={styles.content}
       />
