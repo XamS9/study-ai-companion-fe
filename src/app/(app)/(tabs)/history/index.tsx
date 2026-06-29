@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +13,11 @@ import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-const TYPE_GLYPH: Record<ActivityType, string> = { exam: '✎', material: '◫', subject: '＋' };
+const ACTIVITY_ICON: Record<ActivityType, string> = {
+  exam: 'pencil-outline',
+  material: 'document-text-outline',
+  subject: 'folder-open-outline',
+};
 const TYPE_COLOR: Record<ActivityType, 'success' | 'accent' | 'primary'> = {
   exam: 'success',
   material: 'accent',
@@ -87,9 +92,7 @@ function ActivityRow({ activity, now }: { activity: Activity; now: number }) {
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
       <View style={[styles.icon, { backgroundColor: `${color}55` }]}>
-        <ThemedText style={{ color, fontSize: 18, lineHeight: 22 }}>
-          {TYPE_GLYPH[activity.type]}
-        </ThemedText>
+        <Ionicons name={ACTIVITY_ICON[activity.type] as never} size={20} color={color} />
       </View>
       <View style={styles.cardText}>
         <ThemedText type="smallBold">{t(`history.types.${activity.type}`)}</ThemedText>

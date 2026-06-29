@@ -44,7 +44,9 @@ export function Avatar({ uri, name, size = 96 }: AvatarProps) {
         },
       ]}
     >
-      <ThemedText style={{ fontSize: size * 0.4, fontWeight: '600' }}>{initials(name)}</ThemedText>
+      <ThemedText style={{ fontSize: size * 0.4, lineHeight: size * 0.5, fontWeight: '600' }}>
+        {initials(name)}
+      </ThemedText>
     </View>
   );
 }

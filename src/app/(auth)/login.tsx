@@ -1,7 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ export default function LoginScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [oauthBusy, setOauthBusy] = useState<OAuthProvider | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -71,9 +73,24 @@ export default function LoginScreen() {
         label={t('common.password')}
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry={!showPassword}
+        autoCapitalize="none"
         autoComplete="password"
         textContentType="password"
+        rightElement={
+          <Pressable
+            onPress={() => setShowPassword((v) => !v)}
+            hitSlop={Spacing.two}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword ? t('common.hidePassword') : t('common.showPassword')}
+          >
+            <Ionicons
+              name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color={theme.textSecondary}
+            />
+          </Pressable>
+        }
       />
 
       <Link href="/(auth)/forgot-password" style={styles.forgot}>

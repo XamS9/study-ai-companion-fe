@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { requireOptionalNativeModule } from 'expo';
 import { CameraView, type CameraType, useCameraPermissions } from 'expo-camera';
 import { File, Paths } from 'expo-file-system';
@@ -44,7 +45,7 @@ function DiagnosticCard({
   loading,
   children,
 }: {
-  icon: string;
+  icon: ReactNode;
   title: string;
   description: string;
   status: Status;
@@ -60,9 +61,9 @@ function DiagnosticCard({
   return (
     <ThemedView type="backgroundElement" style={[styles.card, { borderColor: theme.border }]}>
       <View style={styles.cardHeader}>
-        <ThemedText type="subtitle" style={styles.icon}>
+        <View style={styles.iconWrapper}>
           {icon}
-        </ThemedText>
+        </View>
         <View style={styles.cardHeaderText}>
           <ThemedText type="smallBold">{title}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
@@ -95,6 +96,7 @@ function DiagnosticCard({
 
 export default function DiagnosticsScreen() {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Camera -----------------------------------------------------------------
   const [cameraPerm, requestCamera] = useCameraPermissions();
@@ -227,7 +229,7 @@ export default function DiagnosticsScreen() {
       </ThemedText>
 
       <DiagnosticCard
-        icon="◉"
+        icon={<Ionicons name="camera-outline" size={28} color={theme.text} />}
         title={t('diagnostics.camera.title')}
         description={t('diagnostics.camera.description')}
         status={cameraStatus}
@@ -248,7 +250,7 @@ export default function DiagnosticsScreen() {
       </DiagnosticCard>
 
       <DiagnosticCard
-        icon="⌖"
+        icon={<Ionicons name="location-outline" size={28} color={theme.text} />}
         title={t('diagnostics.location.title')}
         description={t('diagnostics.location.description')}
         status={locationStatus}
@@ -259,7 +261,7 @@ export default function DiagnosticsScreen() {
       />
 
       <DiagnosticCard
-        icon="≋"
+        icon={<Ionicons name="wifi-outline" size={28} color={theme.text} />}
         title={t('diagnostics.network.title')}
         description={t('diagnostics.network.description')}
         status={netStatus}
@@ -271,7 +273,7 @@ export default function DiagnosticsScreen() {
       />
 
       <DiagnosticCard
-        icon="▤"
+        icon={<Ionicons name="server-outline" size={28} color={theme.text} />}
         title={t('diagnostics.storage.title')}
         description={t('diagnostics.storage.description')}
         status={storageStatus}
@@ -293,7 +295,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   cardHeaderText: { flex: 1, gap: Spacing.half },
-  icon: { fontSize: 28, lineHeight: 32 },
+  iconWrapper: { width: 32, alignItems: 'center' },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   cameraPreview: {
     width: '100%',

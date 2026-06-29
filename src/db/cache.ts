@@ -289,6 +289,21 @@ export function writeSubjectQuestions(subjectId: string, list: Question[]): void
   });
 }
 
+// ── Cache wipe (on sign-out) ─────────────────────────────────────────────────
+
+/** Deletes every cached row so a new user never sees a previous user's data. */
+export function clearAllCache(): void {
+  safeWrite(() => {
+    db.delete(subjects).run();
+    db.delete(materials).run();
+    db.delete(flashcards).run();
+    db.delete(exams).run();
+    db.delete(examQuestions).run();
+    db.delete(pendingExamSubmissions).run();
+    db.delete(appCache).run();
+  });
+}
+
 // ── Activity feed (derived list, stored as a single JSON blob) ────────────────
 
 const ACTIVITY_KEY = 'activity';

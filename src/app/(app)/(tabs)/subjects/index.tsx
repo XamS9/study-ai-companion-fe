@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +46,7 @@ export default function SubjectsScreen() {
           onPress={() => router.push('/subjects/new')}
           style={[styles.addButton, { backgroundColor: theme.primary }]}
         >
-          <ThemedText style={[styles.addGlyph, { color: theme.primaryText }]}>+</ThemedText>
+          <Ionicons name="add" size={22} color={theme.primaryText} />
         </Pressable>
       </View>
 
@@ -55,7 +56,7 @@ export default function SubjectsScreen() {
           { backgroundColor: theme.inputBackground, borderColor: theme.border },
         ]}
       >
-        <ThemedText themeColor="textSecondary">🔍</ThemedText>
+        <Ionicons name="search-outline" size={18} color={theme.textSecondary} />
         <TextInput
           value={query}
           onChangeText={setQuery}
@@ -135,7 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addGlyph: { fontSize: 24, lineHeight: 28 },
   search: {
     flexDirection: 'row',
     alignItems: 'center',

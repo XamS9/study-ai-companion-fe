@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
@@ -13,7 +14,11 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { scoreColorKey } from '@/lib/score';
 
-const MATERIAL_GLYPH = { pdf: '◫', image: '🖼', note: '✎' } as const;
+const MATERIAL_ICON = {
+  pdf: 'document-text-outline',
+  image: 'image-outline',
+  note: 'create-outline',
+} as const satisfies Record<string, string>;
 
 export default function SubjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -175,7 +180,7 @@ function MaterialRow({ material }: { material: Material }) {
     >
       <ThemedView type="backgroundElement" style={styles.row}>
         <View style={[styles.rowIcon, { backgroundColor: theme.backgroundSelected }]}>
-          <ThemedText style={styles.glyph}>{MATERIAL_GLYPH[material.type]}</ThemedText>
+          <Ionicons name={MATERIAL_ICON[material.type]} size={20} color={theme.textSecondary} />
         </View>
         <View style={styles.rowText}>
           <ThemedText type="smallBold">{material.title}</ThemedText>
@@ -184,7 +189,7 @@ function MaterialRow({ material }: { material: Material }) {
             {material.pages != null ? ` · ${t('materials.pages', { count: material.pages })}` : ''}
           </ThemedText>
         </View>
-        <ThemedText themeColor="textSecondary">›</ThemedText>
+        <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />
       </ThemedView>
     </Pressable>
   );
@@ -251,7 +256,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  glyph: { fontSize: 18, lineHeight: 22 },
   rowText: { flex: 1, gap: Spacing.half },
   badge: {
     paddingHorizontal: Spacing.two,

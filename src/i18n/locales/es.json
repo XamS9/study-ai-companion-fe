@@ -15,7 +15,9 @@
     "delete": "Eliminar",
     "create": "Crear",
     "copy": "Copiar",
-    "copied": "¡Copiado!"
+    "copied": "¡Copiado!",
+    "showPassword": "Mostrar",
+    "hidePassword": "Ocultar"
   },
   "auth": {
     "loginTitle": "Bienvenido de nuevo",

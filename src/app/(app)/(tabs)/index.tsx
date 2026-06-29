@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -10,6 +11,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useAvatarUrl } from '@/hooks/use-avatar-url';
+import { useTheme } from '@/hooks/use-theme';
 import { useAuthStore } from '@/store/auth';
 
 function StatCard({ label, value }: { label: string; value: string }) {
@@ -84,11 +86,12 @@ export default function DashboardScreen() {
 }
 
 function MenuRow({ label, onPress }: { label: string; onPress: () => void }) {
+  const theme = useTheme();
   return (
     <Pressable onPress={onPress} accessibilityRole="button">
       <ThemedView type="backgroundElement" style={styles.menuRow}>
         <ThemedText type="smallBold">{label}</ThemedText>
-        <ThemedText themeColor="textSecondary">›</ThemedText>
+        <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />
       </ThemedView>
     </Pressable>
   );

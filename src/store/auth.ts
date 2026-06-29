@@ -1,7 +1,9 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
+import { clearAllCache } from '@/db/cache';
 import { api } from '@/lib/api';
+import { queryClient } from '@/lib/query-client';
 import { supabase } from '@/lib/supabase';
 import { useLanguageStore, type Language } from '@/store/language';
 import { useThemeStore, type ThemeMode } from '@/store/theme';
@@ -92,6 +94,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
+    clearAllCache();
+    queryClient.clear();
     set({ session: null, user: null, profile: null, status: 'unauthenticated' });
   },
 }));
