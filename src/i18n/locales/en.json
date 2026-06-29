@@ -157,6 +157,7 @@
   "exams": {
     "title": "Exams",
     "filter": {
+      "label": "Filter",
       "all": "All",
       "completed": "Completed",
       "failed": "Failed",
