@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useDashboard } from '@/api/dashboard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AsyncContent } from '@/components/ui/async-content';
 import { Avatar } from '@/components/ui/avatar';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
@@ -30,7 +31,7 @@ export default function DashboardScreen() {
   const profile = useAuthStore((s) => s.profile);
   const user = useAuthStore((s) => s.user);
   const avatarUrl = useAvatarUrl(profile?.avatar_url);
-  const { data: dashboard } = useDashboard();
+  const { data: dashboard, isLoading, error } = useDashboard();
 
   const name = profile?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? '';
   const hasData = dashboard ? dashboard.subjectsCount > 0 : false;
@@ -47,24 +48,32 @@ export default function DashboardScreen() {
         </Pressable>
       </View>
 
-      <View style={styles.grid}>
-        <StatCard label={t('dashboard.subjects')} value={String(dashboard?.subjectsCount ?? 0)} />
-        <StatCard label={t('dashboard.materials')} value={String(dashboard?.materialsCount ?? 0)} />
-        <StatCard
-          label={t('dashboard.average')}
-          value={dashboard?.averageScore != null ? `${dashboard.averageScore}%` : '—'}
-        />
-        <StatCard
-          label={t('dashboard.lastExam')}
-          value={dashboard?.lastExam ? `${dashboard.lastExam.score}%` : '—'}
-        />
-      </View>
+      <AsyncContent
+        isLoading={isLoading && !dashboard}
+        error={!dashboard ? (error as Error | null) : null}
+      >
+        <View style={styles.grid}>
+          <StatCard label={t('dashboard.subjects')} value={String(dashboard?.subjectsCount ?? 0)} />
+          <StatCard
+            label={t('dashboard.materials')}
+            value={String(dashboard?.materialsCount ?? 0)}
+          />
+          <StatCard
+            label={t('dashboard.average')}
+            value={dashboard?.averageScore != null ? `${dashboard.averageScore}%` : '—'}
+          />
+          <StatCard
+            label={t('dashboard.lastExam')}
+            value={dashboard?.lastExam ? `${dashboard.lastExam.score}%` : '—'}
+          />
+        </View>
 
-      {!hasData ? (
-        <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
-          {t('dashboard.noData')}
-        </ThemedText>
-      ) : null}
+        {!hasData ? (
+          <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
+            {t('dashboard.noData')}
+          </ThemedText>
+        ) : null}
+      </AsyncContent>
 
       <View style={styles.menu}>
         <MenuRow label={t('dashboard.profile')} onPress={() => router.push('/profile')} />

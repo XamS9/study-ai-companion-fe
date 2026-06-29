@@ -39,6 +39,17 @@ export type Flashcard = {
 
 export type QuestionType = 'multiple_choice' | 'true_false';
 
+export type Question = {
+  id: string;
+  subjectId: string;
+  materialId: string | null;
+  prompt: string;
+  type: QuestionType;
+  options: string[];
+  correctAnswer: string;
+  createdAt: string;
+};
+
 export type Exam = {
   id: string;
   subjectId: string;
@@ -66,12 +77,38 @@ export type ExamQuestion = {
 export type SubjectDetail = Subject & { materials: Material[]; exams: Exam[] };
 export type ExamDetail = Exam & { questions: ExamQuestion[] };
 
+/** Payload sent to `POST /api/exams/:id/submit`; also queued locally when offline. */
+export type ExamSubmissionPayload = {
+  timeElapsedSeconds?: number;
+  answers: { examQuestionId: string; answer: string }[];
+};
+
 export type Dashboard = {
   subjectsCount: number;
   materialsCount: number;
   examsTaken: number;
   averageScore: number | null;
   lastExam: { id: string; name: string; subject: string | null; score: number; date: string } | null;
+};
+
+export type SubjectStats = {
+  subjectId: string;
+  subject: string;
+  color: SubjectColor;
+  examsTaken: number;
+  averageScore: number | null;
+  bestScore: number | null;
+  worstScore: number | null;
+  totalStudyTimeSeconds: number;
+};
+
+export type Stats = {
+  examsTaken: number;
+  averageScore: number | null;
+  bestScore: number | null;
+  worstScore: number | null;
+  totalStudyTimeSeconds: number;
+  perSubject: SubjectStats[];
 };
 
 export type ActivityType = 'exam' | 'material' | 'subject';

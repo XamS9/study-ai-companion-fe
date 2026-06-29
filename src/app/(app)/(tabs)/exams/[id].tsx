@@ -1,8 +1,8 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { useExam } from '@/api/exams';
+import { useDeleteExam, useExam } from '@/api/exams';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AsyncContent } from '@/components/ui/async-content';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { formatDuration } from '@/lib/format';
 import { scoreColorKey } from '@/lib/score';
 
 export default function ExamDetailScreen() {
@@ -18,6 +19,21 @@ export default function ExamDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { data: exam, isLoading, error, refetch } = useExam(id);
+  const deleteExam = useDeleteExam(exam?.subjectId);
+
+  const confirmDelete = () => {
+    Alert.alert(t('exams.deleteTitle'), t('exams.deleteMessage'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('common.delete'),
+        style: 'destructive',
+        onPress: async () => {
+          await deleteExam.mutateAsync(id);
+          router.back();
+        },
+      },
+    ]);
+  };
 
   return (
     <Screen>
@@ -49,6 +65,13 @@ export default function ExamDetailScreen() {
                     <ThemedText type="small" themeColor="textSecondary">
                       {t('exams.detail.correct', { correct: exam.correctCount ?? 0, total })}
                     </ThemedText>
+                    {exam.timeElapsedSeconds != null ? (
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {t('exams.detail.time', {
+                          duration: formatDuration(exam.timeElapsedSeconds),
+                        })}
+                      </ThemedText>
+                    ) : null}
                   </ThemedView>
                 ) : (
                   <ThemedView type="backgroundElement" style={styles.upcomingCard}>
@@ -101,6 +124,13 @@ export default function ExamDetailScreen() {
                     ))}
                   </View>
                 </View>
+
+                <Button
+                  title={t('exams.detail.delete')}
+                  variant="ghost"
+                  loading={deleteExam.isPending}
+                  onPress={confirmDelete}
+                />
               </>
             );
           })()

@@ -13,7 +13,6 @@ import { Spacing } from '@/constants/theme';
 import { useAvatarUrl } from '@/hooks/use-avatar-url';
 import { useTheme } from '@/hooks/use-theme';
 import { uploadAvatar } from '@/lib/storage';
-import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/auth';
 
 export default function EditProfileScreen() {
@@ -22,7 +21,7 @@ export default function EditProfileScreen() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const profile = useAuthStore((s) => s.profile);
-  const refreshProfile = useAuthStore((s) => s.refreshProfile);
+  const updateProfile = useAuthStore((s) => s.updateProfile);
 
   const [fullName, setFullName] = useState(profile?.full_name ?? '');
   const [saving, setSaving] = useState(false);
@@ -51,12 +50,7 @@ export default function EditProfileScreen() {
     setUploading(true);
     try {
       const path = await uploadAvatar(user.id, asset.base64, asset.mimeType ?? 'image/jpeg');
-      const { error } = await supabase
-        .from('profiles')
-        .update({ avatar_url: path, updated_at: new Date().toISOString() })
-        .eq('id', user.id);
-      if (error) throw error;
-      await refreshProfile();
+      await updateProfile({ avatar_url: path });
       Alert.alert(t('profile.photoUpdated'));
     } catch (e) {
       setError(e instanceof Error ? e.message : t('auth.genericError'));
@@ -69,17 +63,14 @@ export default function EditProfileScreen() {
     if (!user) return;
     setError(null);
     setSaving(true);
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: fullName.trim(), updated_at: new Date().toISOString() })
-      .eq('id', user.id);
-    setSaving(false);
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      await updateProfile({ full_name: fullName.trim() });
+      router.back();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t('auth.genericError'));
+    } finally {
+      setSaving(false);
     }
-    await refreshProfile();
-    router.back();
   };
 
   return (

@@ -1,6 +1,7 @@
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import type {
+  ExamSubmissionPayload,
   MaterialType,
   QuestionType,
   SubjectColor,
@@ -86,4 +87,16 @@ export const appCache = sqliteTable('app_cache', {
   key: text('key').primaryKey(),
   value: text('value', { mode: 'json' }).notNull(),
   updatedAt: integer('updated_at').notNull(),
+});
+
+/**
+ * Outbox for exam submissions taken offline. The attempt is graded locally and
+ * written to the cache immediately; this row holds the raw payload so the real
+ * server submit can be replayed once connectivity returns (see `@/lib/exam-sync`).
+ * Keyed by examId — a single-attempt exam can have at most one pending submission.
+ */
+export const pendingExamSubmissions = sqliteTable('pending_exam_submissions', {
+  examId: text('exam_id').primaryKey(),
+  payload: text('payload', { mode: 'json' }).$type<ExamSubmissionPayload>().notNull(),
+  createdAt: integer('created_at').notNull(),
 });

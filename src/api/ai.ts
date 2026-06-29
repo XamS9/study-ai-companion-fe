@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api';
 import { materialKeys } from './materials';
+import { questionKeys } from './questions';
 import { subjectKeys } from './subjects';
 import type { QuestionType } from './types';
 
@@ -32,6 +33,26 @@ export function useGenerateQuestions() {
     mutationFn: (input: GenerateQuestionsInput) =>
       api.post<{ questions: GeneratedQuestion[] }>('/api/ai/generate-questions', input),
     onSuccess: () => qc.invalidateQueries({ queryKey: subjectKeys.all }),
+  });
+}
+
+/**
+ * Replaces a subject's question bank with a freshly AI-generated set (built from the
+ * subject's materials). The backend throttles this per subject; a 429 surfaces as an
+ * `ApiError` with `retryAfterSeconds` so the caller can show a cooldown.
+ */
+export function useRegenerateQuestions(subjectId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (count?: number) =>
+      api.post<{ questions: GeneratedQuestion[] }>(
+        `/api/subjects/${subjectId}/regenerate-questions`,
+        count != null ? { count } : undefined,
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: questionKeys.bySubject(subjectId) });
+      qc.invalidateQueries({ queryKey: subjectKeys.all });
+    },
   });
 }
 

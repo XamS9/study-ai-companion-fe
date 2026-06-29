@@ -108,6 +108,20 @@ export default function SubjectDetailScreen() {
             </Section>
 
             <Button
+              title={t('subjects.detail.edit')}
+              variant="secondary"
+              onPress={() => router.push({ pathname: '/subjects/edit/[id]', params: { id } })}
+            />
+
+            <Button
+              title={t('subjects.detail.questionBank')}
+              variant="secondary"
+              onPress={() =>
+                router.push({ pathname: '/subjects/questions/[id]', params: { id } })
+              }
+            />
+
+            <Button
               title={t('subjects.detail.deleteSubject')}
               variant="ghost"
               loading={deleteSubject.isPending}

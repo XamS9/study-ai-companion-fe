@@ -52,8 +52,11 @@ gitignored — if typecheck complains about missing CSS-module types, run `pnpm 
   each exporting a `*Keys` query-key factory and typed against `src/api/types.ts`.
 - **`api.ts` fetch wrapper.** `apiFetch`/`api.{get,post,patch,delete}` prefix `EXPO_PUBLIC_API_URL`,
   attach the current Supabase access token as a Bearer header, unwrap the backend's `{ error }`
-  message on failure, and treat 204 as `undefined`. Auth/profile flows talk to Supabase directly
-  and don't go through this.
+  message on failure, and treat 204 as `undefined`. It throws a typed `NetworkError` when the
+  request never reaches the server (offline) vs. a plain `Error` for HTTP error responses, so
+  callers can fall back to an offline queue. Auth flows talk to Supabase directly; profile
+  *reads* still do (resilient session bootstrap via `refreshProfile`), but profile *writes*
+  (name, avatar, theme, language) go through `PATCH /api/profile` via `useAuthStore.updateProfile`.
 - **Offline-first read-through cache.** Implemented, not aspirational. `src/api` data hooks use
   `useCachedQuery` (`src/db/cached-query.ts`): it seeds React Query `initialData` synchronously
   from SQLite, refetches in the background and writes the response back, and on network failure
@@ -61,7 +64,11 @@ gitignored — if typecheck complains about missing CSS-module types, run `pnpm 
   `src/db/cache.ts` — **every** call is wrapped in `safeRead`/`safeWrite` so a cache failure
   degrades to network-only and never crashes a screen. List writes replace the full set
   (`notInArray`) so server deletions propagate; dashboard/activity aggregates are stored as JSON
-  blobs in the `appCache` key/value table. Mutations still require connectivity. `DbProvider`
+  blobs in the `appCache` key/value table. Most mutations still require connectivity, but **exam
+  submission works offline**: `useSubmitExam` grades the attempt against the cached question set
+  (`gradeExamLocally`) and queues the real submit in the `pending_exam_submissions` table; the
+  `useExamSync` hook (mounted in the root navigator) replays the queue on reconnect via NetInfo.
+  `DbProvider`
   (`src/db/provider.tsx`) applies pending migrations before children render, but renders anyway
   on migration failure (cache degrades gracefully). `expo-secure-store` holds the session token
   for offline login.
@@ -76,6 +83,22 @@ gitignored — if typecheck complains about missing CSS-module types, run `pnpm 
   color/spacing/type tokens live in **`src/constants/theme.ts`** (`Colors`, `Spacing`, `ThemeColor`).
   Prefer the themed primitives in `src/components/` (`themed-text`, `themed-view`, `ui/*`) over
   raw RN views so colors track the theme; styling is RN `StyleSheet`, not NativeWind.
+
+## Code Style
+
+- **Component syntax.** Use arrow-function components: `const Component = () => {}`. No class components.
+- **Custom hooks.** Extract non-trivial component logic into hooks under `src/hooks/`. Keep components thin.
+- **TypeScript.** Strict mode is on — zero `any`. Use explicit return types on hooks and utilities.
+- **Touch targets.** Prefer `Pressable` over the legacy `TouchableOpacity` / `TouchableHighlight`.
+- **Safe areas.** Wrap native UI touchpoints in `SafeAreaView` from `react-native-safe-area-context`, not the RN built-in.
+- **Route params.** Always pass and read route parameters with typed `useLocalSearchParams` — never cast or read from an untyped object.
+- **Heavy sections.** Defer heavy UI with `React.lazy` or lazy `import()` / skeleton placeholders rather than blocking the initial render.
+- **Platform quirks.** Check iOS *and* Android styling behaviour before shipping any layout or touch change — they diverge on shadows, font metrics, hit-slop, and safe-area insets.
+
+## Guardrails
+
+- **No new dependencies without asking.** Do not install any npm/pnpm package without explicitly confirming with the user first.
+- **Plan before coding.** For any non-trivial change, state a clear architecture plan and wait for approval before modifying files.
 
 ## Gotchas
 

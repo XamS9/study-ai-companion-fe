@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useAuthStore } from '@/store/auth';
 import { useLanguageStore, type Language } from '@/store/language';
 import { useThemeStore, type ThemeMode } from '@/store/theme';
 
@@ -59,6 +60,19 @@ export default function SettingsScreen() {
   const setMode = useThemeStore((s) => s.setMode);
   const language = useLanguageStore((s) => s.language);
   const setLanguage = useLanguageStore((s) => s.setLanguage);
+  const updateProfile = useAuthStore((s) => s.updateProfile);
+
+  // Apply locally first (instant, works offline), then mirror to the profile so
+  // the choice syncs across devices. A failed sync (e.g. offline) is ignored —
+  // the local preference still stands.
+  const selectTheme = (next: ThemeMode) => {
+    void setMode(next);
+    void updateProfile({ theme: next }).catch(() => {});
+  };
+  const selectLanguage = (next: Language) => {
+    void setLanguage(next);
+    void updateProfile({ language: next }).catch(() => {});
+  };
 
   const themeOptions: { value: ThemeMode; label: string }[] = [
     { value: 'system', label: t('settings.themeSystem') },
@@ -80,13 +94,13 @@ export default function SettingsScreen() {
         title={t('settings.theme')}
         value={mode}
         options={themeOptions}
-        onSelect={setMode}
+        onSelect={selectTheme}
       />
       <OptionGroup
         title={t('settings.language')}
         value={language}
         options={languageOptions}
-        onSelect={setLanguage}
+        onSelect={selectLanguage}
       />
 
       <View style={styles.group}>

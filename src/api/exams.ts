@@ -1,10 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { readExamDetail, readExams, writeExamDetail, writeExams } from '@/db/cache';
+import {
+  enqueuePendingExam,
+  gradeExamLocally,
+  readExamDetail,
+  readExams,
+  writeExamDetail,
+  writeExams,
+} from '@/db/cache';
 import { useCachedQuery } from '@/db/cached-query';
-import { api } from '@/lib/api';
+import { api, NetworkError } from '@/lib/api';
 import { subjectKeys } from './subjects';
-import type { Exam, ExamDetail } from './types';
+import type { Exam, ExamDetail, ExamSubmissionPayload } from './types';
 
 export type CreateExamInput = {
   subjectId: string;
@@ -13,10 +20,7 @@ export type CreateExamInput = {
   questionCount?: number;
 };
 
-export type SubmitExamInput = {
-  timeElapsedSeconds?: number;
-  answers: { examQuestionId: string; answer: string }[];
-};
+export type SubmitExamInput = ExamSubmissionPayload;
 
 export const examKeys = {
   all: ['exams'] as const,
@@ -57,7 +61,22 @@ export function useCreateExam() {
 export function useSubmitExam(id: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: SubmitExamInput) => api.post<ExamDetail>(`/api/exams/${id}/submit`, input),
+    mutationFn: async (input: SubmitExamInput): Promise<ExamDetail> => {
+      try {
+        const exam = await api.post<ExamDetail>(`/api/exams/${id}/submit`, input);
+        writeExamDetail(exam);
+        return exam;
+      } catch (err) {
+        // Offline: grade against the cached question set and queue the real submit
+        // for `useExamSync` to replay on reconnect. If the exam isn't cached there's
+        // nothing to grade locally, so surface the original error.
+        if (!(err instanceof NetworkError)) throw err;
+        const graded = gradeExamLocally(id, input);
+        if (!graded) throw err;
+        enqueuePendingExam(id, input);
+        return graded;
+      }
+    },
     onSuccess: (exam) => {
       qc.invalidateQueries({ queryKey: examKeys.all });
       qc.invalidateQueries({ queryKey: examKeys.detail(id) });
@@ -66,10 +85,14 @@ export function useSubmitExam(id: string) {
   });
 }
 
-export function useDeleteExam() {
+export function useDeleteExam(subjectId?: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/api/exams/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: examKeys.all }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: examKeys.all });
+      if (subjectId) qc.invalidateQueries({ queryKey: subjectKeys.detail(subjectId) });
+      qc.invalidateQueries({ queryKey: subjectKeys.all });
+    },
   });
 }

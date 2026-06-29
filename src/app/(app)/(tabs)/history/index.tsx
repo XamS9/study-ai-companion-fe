@@ -1,6 +1,7 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useActivity } from '@/api/dashboard';
 import type { Activity, ActivityType } from '@/api/types';
@@ -20,6 +21,8 @@ const TYPE_COLOR: Record<ActivityType, 'success' | 'accent' | 'primary'> = {
 
 export default function HistoryScreen() {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const router = useRouter();
   const { data, isLoading, error, refetch } = useActivity();
   const activity = data ?? [];
   // Snapshot "now" once at mount so relative times stay pure during render (the
@@ -28,7 +31,18 @@ export default function HistoryScreen() {
 
   return (
     <Screen>
-      <ThemedText type="subtitle">{t('history.title')}</ThemedText>
+      <View style={styles.header}>
+        <ThemedText type="subtitle">{t('history.title')}</ThemedText>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('stats.title')}
+          onPress={() => router.push('/stats')}
+        >
+          <ThemedText type="smallBold" style={{ color: theme.primary }}>
+            {t('history.viewStats')}
+          </ThemedText>
+        </Pressable>
+      </View>
 
       <AsyncContent
         isLoading={isLoading}
@@ -98,6 +112,7 @@ function ActivityRow({ activity, now }: { activity: Activity; now: number }) {
 }
 
 const styles = StyleSheet.create({
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   list: { gap: Spacing.two },
   card: {
     flexDirection: 'row',

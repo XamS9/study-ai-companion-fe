@@ -7,9 +7,12 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AsyncContent } from '@/components/ui/async-content';
 import { Button } from '@/components/ui/button';
+import { CopyButton } from '@/components/ui/copy-button';
+import { Markdown } from '@/components/ui/markdown';
 import { Screen } from '@/components/ui/screen';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { markdownToPlainText } from '@/lib/markdown';
 
 export default function SummaryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,9 +31,15 @@ export default function SummaryScreen() {
             {material.summary ? (
               <>
                 <View style={styles.block}>
-                  <ThemedText type="smallBold">{t('materials.summary')}</ThemedText>
+                  <View style={styles.blockHeader}>
+                    <ThemedText type="smallBold">{t('materials.summary')}</ThemedText>
+                    <CopyButton
+                      value={markdownToPlainText(material.summary)}
+                      accessibilityLabel={`${t('common.copy')} ${t('materials.summary')}`}
+                    />
+                  </View>
                   <ThemedView type="backgroundElement" style={styles.card}>
-                    <ThemedText>{material.summary}</ThemedText>
+                    <Markdown>{material.summary}</Markdown>
                   </ThemedView>
                 </View>
 
@@ -74,6 +83,7 @@ export default function SummaryScreen() {
 
 const styles = StyleSheet.create({
   block: { gap: Spacing.two },
+  blockHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   card: { padding: Spacing.three, borderRadius: Spacing.three },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   chip: { paddingHorizontal: Spacing.three, paddingVertical: Spacing.two, borderRadius: 999 },

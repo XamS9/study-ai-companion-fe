@@ -13,7 +13,9 @@
     "or": "or",
     "retry": "Retry",
     "delete": "Delete",
-    "create": "Create"
+    "create": "Create",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -92,7 +94,9 @@
       "addExam": "Exam",
       "deleteSubject": "Delete subject",
       "deleteTitle": "Delete subject?",
-      "deleteMessage": "This will remove the subject and all its materials and exams."
+      "deleteMessage": "This will remove the subject and all its materials and exams.",
+      "questionBank": "Question bank",
+      "edit": "Edit subject"
     },
     "new": {
       "title": "New subject",
@@ -103,7 +107,13 @@
       "description": "Description",
       "descriptionPlaceholder": "What is this subject about?",
       "color": "Color",
+      "progress": "Progress",
+      "progressDecrease": "Decrease progress",
+      "progressIncrease": "Increase progress",
       "create": "Create subject"
+    },
+    "edit": {
+      "title": "Edit subject"
     }
   },
   "materials": {
@@ -111,8 +121,13 @@
     "notFound": "Material not found.",
     "content": "Extracted content",
     "noContent": "No content yet.",
+    "file": "Attached file",
+    "openFile": "Open file",
     "summary": "Summary",
     "generateSummary": "Generate AI summary",
+    "delete": "Delete material",
+    "deleteTitle": "Delete material?",
+    "deleteMessage": "This will permanently remove this material.",
     "pages_one": "{{count}} page",
     "pages_other": "{{count}} pages",
     "types": {
@@ -128,6 +143,10 @@
       "pagesLabel": "Pages",
       "contentLabel": "Content / notes",
       "contentPlaceholder": "Paste or type the material text…",
+      "pickImage": "Choose image",
+      "takePhoto": "Take photo",
+      "pickPdf": "Choose PDF",
+      "ocrUnavailable": "Couldn't extract text automatically — type or paste the content below. On-device OCR needs a development or production build, not Expo Go.",
       "create": "Add material"
     }
   },
@@ -146,10 +165,14 @@
       "review": "Question review",
       "preview": "Generated questions",
       "take": "Take exam",
+      "time": "Time {{duration}}",
       "answer": "Answer: {{answer}}",
       "upcomingNote_one": "{{count}} AI-generated question ready.",
-      "upcomingNote_other": "{{count}} AI-generated questions ready."
+      "upcomingNote_other": "{{count}} AI-generated questions ready.",
+      "delete": "Delete exam"
     },
+    "deleteTitle": "Delete exam?",
+    "deleteMessage": "This will permanently remove this exam and its results.",
     "new": {
       "title": "New exam",
       "create": "Create exam",
@@ -168,6 +191,7 @@
   },
   "history": {
     "title": "History",
+    "viewStats": "Statistics ›",
     "types": {
       "exam": "Exam completed",
       "material": "Material added",
@@ -182,6 +206,31 @@
       "hour_other": "{{count}} hours ago",
       "day_one": "{{count}} day ago",
       "day_other": "{{count}} days ago"
+    }
+  },
+  "stats": {
+    "title": "Statistics",
+    "empty": "Take an exam to see your statistics.",
+    "examsTaken": "Exams taken",
+    "average": "Average",
+    "best": "Best",
+    "worst": "Worst",
+    "totalStudyTime": "Total study time",
+    "bySubject": "By subject",
+    "subjectMeta": "{{count}} taken · best {{best}} · worst {{worst}} · {{time}}"
+  },
+  "questions": {
+    "title": "Question bank",
+    "subtitle_one": "{{count}} question",
+    "subtitle_other": "{{count}} questions",
+    "empty": "No questions yet. Generate study aids from a material to build the bank.",
+    "regenerate": "Regenerate questions",
+    "regenerateIn": "Try again in {{seconds}}s",
+    "regenerateTitle": "Regenerate questions?",
+    "regenerateMessage": "This replaces the current question bank with a new AI-generated set drawn from this subject's materials.",
+    "types": {
+      "multiple_choice": "Multiple choice",
+      "true_false": "True / False"
     }
   },
   "profile": {

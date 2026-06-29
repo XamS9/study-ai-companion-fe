@@ -5,14 +5,25 @@ import type {
   Dashboard,
   Exam,
   ExamDetail,
+  ExamSubmissionPayload,
   Flashcard,
   Material,
+  Question,
+  Stats,
   Subject,
   SubjectDetail,
 } from '@/api/types';
 
 import { db } from './client';
-import { appCache, examQuestions, exams, flashcards, materials, subjects } from './schema';
+import {
+  appCache,
+  examQuestions,
+  exams,
+  flashcards,
+  materials,
+  pendingExamSubmissions,
+  subjects,
+} from './schema';
 
 /**
  * Read-through cache helpers backing the React Query hooks in `@/api`. Reads are
@@ -155,6 +166,75 @@ export function writeExamDetail(detail: ExamDetail): void {
   });
 }
 
+// ── Offline exam grading + submission queue ──────────────────────────────────
+
+const normalizeAnswer = (s: string) => s.trim().toLowerCase();
+
+/**
+ * Grades an exam attempt against the locally-cached question set (which carries
+ * each question's `correctAnswer`) and writes the graded detail back to the
+ * cache, mirroring what the server's submit would return. Returns the graded
+ * detail, or `undefined` if the exam isn't cached (nothing to grade offline).
+ *
+ * Grading matches the backend exactly: case/whitespace-insensitive answer compare,
+ * score = round(correct / total * 100).
+ */
+export function gradeExamLocally(
+  examId: string,
+  payload: ExamSubmissionPayload,
+): ExamDetail | undefined {
+  const exam = readExamDetail(examId);
+  if (!exam) return undefined;
+
+  const given = new Map(payload.answers.map((a) => [a.examQuestionId, a.answer]));
+  let correct = 0;
+  const questions = exam.questions.map((q) => {
+    const userAnswer = given.get(q.id) ?? null;
+    const isCorrect =
+      userAnswer != null && normalizeAnswer(userAnswer) === normalizeAnswer(q.correctAnswer);
+    if (isCorrect) correct += 1;
+    return { ...q, userAnswer, isCorrect };
+  });
+
+  const total = questions.length;
+  const graded: ExamDetail = {
+    ...exam,
+    score: total > 0 ? Math.round((correct / total) * 100) : 0,
+    correctCount: correct,
+    totalCount: total,
+    timeElapsedSeconds: payload.timeElapsedSeconds ?? null,
+    date: new Date().toISOString(),
+    questions,
+  };
+  writeExamDetail(graded);
+  return graded;
+}
+
+export function enqueuePendingExam(examId: string, payload: ExamSubmissionPayload): void {
+  safeWrite(() => {
+    const row = { examId, payload, createdAt: Date.now() };
+    db.insert(pendingExamSubmissions)
+      .values(row)
+      .onConflictDoUpdate({ target: pendingExamSubmissions.examId, set: row })
+      .run();
+  });
+}
+
+export function readPendingExams(): { examId: string; payload: ExamSubmissionPayload }[] {
+  return (
+    safeRead(() => {
+      const rows = db.select().from(pendingExamSubmissions).all();
+      return rows.map((r) => ({ examId: r.examId, payload: r.payload }));
+    }) ?? []
+  );
+}
+
+export function deletePendingExam(examId: string): void {
+  safeWrite(() => {
+    db.delete(pendingExamSubmissions).where(eq(pendingExamSubmissions.examId, examId)).run();
+  });
+}
+
 // ── Dashboard (derived aggregate, stored as a single JSON blob) ──────────────
 
 const DASHBOARD_KEY = 'dashboard';
@@ -169,6 +249,42 @@ export function readDashboard(): Dashboard | undefined {
 export function writeDashboard(dashboard: Dashboard): void {
   safeWrite(() => {
     const row = { key: DASHBOARD_KEY, value: dashboard, updatedAt: Date.now() };
+    db.insert(appCache).values(row).onConflictDoUpdate({ target: appCache.key, set: row }).run();
+  });
+}
+
+// ── Stats (derived academic aggregate, stored as a single JSON blob) ──────────
+
+const STATS_KEY = 'stats';
+
+export function readStats(): Stats | undefined {
+  return safeRead(() => {
+    const row = db.select().from(appCache).where(eq(appCache.key, STATS_KEY)).get();
+    return row ? (row.value as Stats) : undefined;
+  });
+}
+
+export function writeStats(stats: Stats): void {
+  safeWrite(() => {
+    const row = { key: STATS_KEY, value: stats, updatedAt: Date.now() };
+    db.insert(appCache).values(row).onConflictDoUpdate({ target: appCache.key, set: row }).run();
+  });
+}
+
+// ── Question bank per subject (stored as a JSON blob keyed by subject) ─────────
+
+const questionsKey = (subjectId: string) => `questions:${subjectId}`;
+
+export function readSubjectQuestions(subjectId: string): Question[] | undefined {
+  return safeRead(() => {
+    const row = db.select().from(appCache).where(eq(appCache.key, questionsKey(subjectId))).get();
+    return row ? (row.value as Question[]) : undefined;
+  });
+}
+
+export function writeSubjectQuestions(subjectId: string, list: Question[]): void {
+  safeWrite(() => {
+    const row = { key: questionsKey(subjectId), value: list, updatedAt: Date.now() };
     db.insert(appCache).values(row).onConflictDoUpdate({ target: appCache.key, set: row }).run();
   });
 }

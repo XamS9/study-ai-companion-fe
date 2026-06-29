@@ -3,6 +3,36 @@ import { supabase } from './supabase';
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 /**
+ * Thrown when the request never reached the server (offline, DNS, timeout) — as
+ * opposed to an HTTP error response, which throws a plain `Error` with the
+ * backend's message. Callers use this to decide whether to fall back to an
+ * offline queue rather than surfacing a hard failure.
+ */
+export class NetworkError extends Error {
+  constructor(cause?: unknown) {
+    super('Network request failed');
+    this.name = 'NetworkError';
+    this.cause = cause;
+  }
+}
+
+/**
+ * Thrown for an HTTP error response (the request reached the server). Carries the
+ * status and, for `429`, the `Retry-After` value in seconds so callers can show an
+ * accurate cooldown. The message is the backend's `{ error }` text when present.
+ */
+export class ApiError extends Error {
+  status: number;
+  retryAfterSeconds?: number;
+  constructor(status: number, message: string, retryAfterSeconds?: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
+
+/**
  * Thin fetch wrapper for the Express backend. Attaches the current Supabase
  * access token as a Bearer header so the API can validate the JWT. The study/AI
  * modules will build on this; auth/profile flows in this phase talk to Supabase
@@ -19,7 +49,14 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
     headers.set('Authorization', `Bearer ${session.access_token}`);
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...init, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...init, headers });
+  } catch (err) {
+    // fetch rejects (vs. returning a non-2xx) only when the request couldn't be
+    // made at all — i.e. no connectivity. Tag it so callers can queue offline.
+    throw new NetworkError(err);
+  }
   if (!res.ok) {
     const body = await res.text();
     // Surface the backend's `{ error }` message when present, else the raw body.
@@ -30,7 +67,12 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
     } catch {
       // body wasn't JSON — keep the raw text
     }
-    throw new Error(message || `API ${res.status}`);
+    const retryAfter = Number(res.headers.get('Retry-After'));
+    throw new ApiError(
+      res.status,
+      message || `API ${res.status}`,
+      Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : undefined,
+    );
   }
   // 204 No Content (e.g. DELETE) has no body to parse.
   if (res.status === 204) return undefined as T;

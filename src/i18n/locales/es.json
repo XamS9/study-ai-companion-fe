@@ -13,7 +13,9 @@
     "or": "o",
     "retry": "Reintentar",
     "delete": "Eliminar",
-    "create": "Crear"
+    "create": "Crear",
+    "copy": "Copiar",
+    "copied": "¡Copiado!"
   },
   "auth": {
     "loginTitle": "Bienvenido de nuevo",
@@ -92,7 +94,9 @@
       "addExam": "Examen",
       "deleteSubject": "Eliminar materia",
       "deleteTitle": "¿Eliminar materia?",
-      "deleteMessage": "Se eliminará la materia junto con sus materiales y exámenes."
+      "deleteMessage": "Se eliminará la materia junto con sus materiales y exámenes.",
+      "questionBank": "Banco de preguntas",
+      "edit": "Editar materia"
     },
     "new": {
       "title": "Nueva materia",
@@ -103,7 +107,13 @@
       "description": "Descripción",
       "descriptionPlaceholder": "¿De qué trata esta materia?",
       "color": "Color",
+      "progress": "Progreso",
+      "progressDecrease": "Disminuir progreso",
+      "progressIncrease": "Aumentar progreso",
       "create": "Crear materia"
+    },
+    "edit": {
+      "title": "Editar materia"
     }
   },
   "materials": {
@@ -111,8 +121,13 @@
     "notFound": "Material no encontrado.",
     "content": "Contenido extraído",
     "noContent": "Aún no hay contenido.",
+    "file": "Archivo adjunto",
+    "openFile": "Abrir archivo",
     "summary": "Resumen",
     "generateSummary": "Generar resumen con IA",
+    "delete": "Eliminar material",
+    "deleteTitle": "¿Eliminar material?",
+    "deleteMessage": "Se eliminará este material de forma permanente.",
     "pages_one": "{{count}} página",
     "pages_other": "{{count}} páginas",
     "types": {
@@ -128,6 +143,10 @@
       "pagesLabel": "Páginas",
       "contentLabel": "Contenido / apuntes",
       "contentPlaceholder": "Pega o escribe el texto del material…",
+      "pickImage": "Elegir imagen",
+      "takePhoto": "Tomar foto",
+      "pickPdf": "Elegir PDF",
+      "ocrUnavailable": "No se pudo extraer el texto automáticamente — escribe o pega el contenido abajo. El OCR en el dispositivo requiere una build de desarrollo o producción, no Expo Go.",
       "create": "Agregar material"
     }
   },
@@ -146,10 +165,14 @@
       "review": "Revisión de preguntas",
       "preview": "Preguntas generadas",
       "take": "Realizar examen",
+      "time": "Tiempo {{duration}}",
       "answer": "Respuesta: {{answer}}",
       "upcomingNote_one": "{{count}} pregunta generada por IA lista.",
-      "upcomingNote_other": "{{count}} preguntas generadas por IA listas."
+      "upcomingNote_other": "{{count}} preguntas generadas por IA listas.",
+      "delete": "Eliminar examen"
     },
+    "deleteTitle": "¿Eliminar examen?",
+    "deleteMessage": "Se eliminará este examen y sus resultados de forma permanente.",
     "new": {
       "title": "Nuevo examen",
       "create": "Crear examen",
@@ -168,6 +191,7 @@
   },
   "history": {
     "title": "Historial",
+    "viewStats": "Estadísticas ›",
     "types": {
       "exam": "Examen completado",
       "material": "Material agregado",
@@ -182,6 +206,31 @@
       "hour_other": "hace {{count}} horas",
       "day_one": "hace {{count}} día",
       "day_other": "hace {{count}} días"
+    }
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "empty": "Realiza un examen para ver tus estadísticas.",
+    "examsTaken": "Exámenes realizados",
+    "average": "Promedio",
+    "best": "Mejor",
+    "worst": "Peor",
+    "totalStudyTime": "Tiempo total de estudio",
+    "bySubject": "Por materia",
+    "subjectMeta": "{{count}} realizados · mejor {{best}} · peor {{worst}} · {{time}}"
+  },
+  "questions": {
+    "title": "Banco de preguntas",
+    "subtitle_one": "{{count}} pregunta",
+    "subtitle_other": "{{count}} preguntas",
+    "empty": "Aún no hay preguntas. Genera material de estudio para crear el banco.",
+    "regenerate": "Regenerar preguntas",
+    "regenerateIn": "Reintenta en {{seconds}} s",
+    "regenerateTitle": "¿Regenerar preguntas?",
+    "regenerateMessage": "Esto reemplaza el banco de preguntas actual con un nuevo conjunto generado por IA a partir de los materiales de esta materia.",
+    "types": {
+      "multiple_choice": "Opción múltiple",
+      "true_false": "Verdadero / Falso"
     }
   },
   "profile": {

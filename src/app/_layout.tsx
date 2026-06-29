@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Splash } from '@/components/ui/splash';
 import { DbProvider } from '@/db/provider';
+import { useExamSync } from '@/hooks/use-exam-sync';
 import { useResolvedScheme } from '@/hooks/use-theme';
 import { createSessionFromUrl } from '@/lib/auth-oauth';
 import { queryClient } from '@/lib/query-client';
@@ -48,6 +49,9 @@ function RootNavigator() {
   const languageHydrated = useLanguageStore((s) => s.hydrated);
 
   const incomingUrl = Linking.useURL();
+
+  // Replays offline exam submissions once connectivity returns.
+  useExamSync();
 
   useEffect(() => {
     hydrateTheme();
