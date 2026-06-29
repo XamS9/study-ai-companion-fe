@@ -156,8 +156,9 @@
     "title": "Exámenes",
     "filter": {
       "all": "Todos",
-      "upcoming": "Próximos",
-      "completed": "Completados"
+      "completed": "Completados",
+      "failed": "Reprobados",
+      "success": "Aprobados"
     },
     "upcoming": "Próximo",
     "empty": "No hay exámenes que coincidan.",

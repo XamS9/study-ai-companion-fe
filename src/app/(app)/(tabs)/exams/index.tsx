@@ -16,8 +16,8 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { scoreColorKey } from '@/lib/score';
 
-type Filter = 'all' | 'upcoming' | 'completed';
-const FILTERS: Filter[] = ['all', 'upcoming', 'completed'];
+type Filter = 'all' | 'completed' | 'failed' | 'success';
+const FILTERS: Filter[] = ['all', 'completed', 'failed', 'success'];
 
 export default function ExamsScreen() {
   const { t } = useTranslation();
@@ -33,8 +33,9 @@ export default function ExamsScreen() {
 
   const exams = useMemo(() => {
     return (examData ?? []).filter((e) => {
-      if (filter === 'upcoming') return e.score === null;
       if (filter === 'completed') return e.score !== null;
+      if (filter === 'failed') return e.score !== null && e.score < 70;
+      if (filter === 'success') return e.score !== null && e.score >= 70;
       return true;
     });
   }, [examData, filter]);

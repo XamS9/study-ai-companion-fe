@@ -156,8 +156,9 @@
     "title": "Exams",
     "filter": {
       "all": "All",
-      "upcoming": "Upcoming",
-      "completed": "Completed"
+      "completed": "Completed",
+      "failed": "Failed",
+      "success": "Passed"
     },
     "upcoming": "Upcoming",
     "empty": "No exams match.",
